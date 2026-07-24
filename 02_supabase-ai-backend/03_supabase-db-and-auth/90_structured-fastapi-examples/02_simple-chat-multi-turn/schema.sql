@@ -1,5 +1,6 @@
 -- conversation_id별 멀티턴 대화 기록을 저장합니다.
 create table if not exists ex90_multi_turn_chat_logs (
+  #로그 1건을 구분하는 고유 id입니다.
   id uuid primary key default gen_random_uuid(),
   conversation_id uuid not null,
   user_message text not null,

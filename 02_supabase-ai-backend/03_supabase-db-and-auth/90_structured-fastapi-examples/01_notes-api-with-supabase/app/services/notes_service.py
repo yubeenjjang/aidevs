@@ -18,6 +18,7 @@ def list_notes() -> list[NotePublic]:
         .limit(20)
         .execute()
     )
+    #[{}, {}, {}]
     return [NotePublic.model_validate(row) for row in result.data]
 
 

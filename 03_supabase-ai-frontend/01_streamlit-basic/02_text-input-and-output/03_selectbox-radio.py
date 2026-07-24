@@ -11,3 +11,4 @@ st.write(f"현재 수준: {level}")  # 문자열, 숫자, 객체를 Streamlit �
 if language == "Python" and level == "입문":  # 조건식이 True일 때만 아래 들여쓰기 블록을 실행합니다.
     st.info("Streamlit은 Python 입문자가 화면을 만들어 보기 좋은 도구입니다.")  # 다음 행동을 안내하는 정보 메시지를 표시합니다.
 
+

@@ -83,6 +83,7 @@ def chat(request: ChatRequest) -> ChatResponse:
     conversation_id = str(request.conversation_id) if request.conversation_id else str(uuid4())
     history = get_messages(conversation_id)
     answer, model = create_gemini_answer(make_prompt(history, request.message))
+    #key value 형식으로 넣는 것
     save_message(conversation_id, "user", request.message)
     save_message(conversation_id, "assistant", answer)
 

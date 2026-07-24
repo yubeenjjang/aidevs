@@ -20,6 +20,7 @@ class ChatResponse(BaseModel):
     log_id: str | None = None
 
 
+#테이블 구조와 똑같이 만들기.중요
 class ChatLogPublic(BaseModel):
     """GET /logs에서 반환하는 로그 1건의 모델입니다."""
 
