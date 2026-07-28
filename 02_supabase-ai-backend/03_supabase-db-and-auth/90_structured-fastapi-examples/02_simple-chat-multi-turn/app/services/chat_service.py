@@ -91,7 +91,11 @@ def save_turn(conversation_id: str, message: str, answer: str, model: str) -> No
 def chat(request: ChatRequest) -> ChatResponse:
     """이전 대화를 문맥으로 사용해 새 답변을 만들고 저장합니다."""
 
-    conversation_id = str(request.conversation_id) if request.conversation_id else str(uuid4())
+    conversation_id = (
+    str(request.conversation_id)
+    if request.conversation_id
+    else str(uuid4())
+    )    
     history = get_recent_history(conversation_id)
     answer, model = create_gemini_answer(make_prompt(history, request.message))
     save_turn(conversation_id, request.message, answer, model)

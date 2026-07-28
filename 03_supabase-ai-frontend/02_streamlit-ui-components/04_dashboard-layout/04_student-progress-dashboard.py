@@ -13,9 +13,12 @@ df = pd.DataFrame(  # 학습자 목록을 DataFrame으로 만들어 표, 지표,
     ]
 )
 
-with st.sidebar:  # 화면 왼쪽 사이드바에는 필터 조건을 배치합니다.
-    selected_course = st.selectbox("과정", ["전체"] + sorted(df["course"].unique()))  # 전체 또는 특정 과정을 선택합니다.
-    min_progress = st.slider("최소 진도율", 0, 100, 0)  # 표시할 데이터의 최소 진도율을 선택합니다.
+# with st.sidebar:  # 화면 왼쪽 사이드바에는 필터 조건을 배치합니다.
+#     selected_course = st.selectbox("과정", ["전체"] + sorted(df["course"].unique()))  # 전체 또는 특정 과정을 선택합니다.
+#     min_progress = st.slider("최소 진도율", 0, 100, 0)  # 표시할 데이터의 최소 진도율을 선택합니다.
+
+selected_course = st.selectbox("과정", ["전체"] + sorted(df["course"].unique()))  # 전체 또는 특정 과정을 선택합니다.
+min_progress = st.slider("최소 진도율", 0, 100, 0)  # 표시할 데이터의 최소 진도율을 선택합니다.
 
 filtered_df = df[df["progress"] >= min_progress]  # 먼저 최소 진도율 조건에 맞는 행만 남깁니다.
 if selected_course != "전체":  # 특정 과정이 선택된 경우에는 과정 조건을 추가로 적용합니다.

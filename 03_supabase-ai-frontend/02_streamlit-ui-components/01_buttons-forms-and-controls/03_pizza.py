@@ -55,6 +55,7 @@ if st.session_state.pizza != "":
 
 p1, p2, p3 = st.columns(3)
 with p1:
+    #st.button("P1", on_click=make_p1)와 같음
     p1_clicked = st.button("P1", on_click=make_p1)
 with p2:
     p2_clicked = st.button("P2", on_click=make_p2)

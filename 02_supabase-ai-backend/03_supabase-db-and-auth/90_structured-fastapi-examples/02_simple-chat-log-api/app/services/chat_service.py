@@ -74,6 +74,7 @@ def answer_and_log(request: ChatRequest) -> ChatResponse:
     )
 
 
+# AI의 대화 기억용이 아니라, 저장된 질문·답변을 관리·확인하기 위한 조회 함수
 def list_logs() -> list[ChatLogPublic]:
     """최근 채팅 로그 20개를 최신순으로 조회합니다."""
 
