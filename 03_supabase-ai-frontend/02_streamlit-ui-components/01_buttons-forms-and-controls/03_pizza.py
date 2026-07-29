@@ -2,6 +2,7 @@
 import streamlit as st
 
 
+#세션 스테이드 사용 시 초기화 작성하기
 def init_state():
     if "pizza" not in st.session_state:
         st.session_state.pizza = ""
@@ -11,15 +12,31 @@ def init_state():
         st.session_state.cheeze = ""
     if "toping" not in st.session_state:
         st.session_state.toping = ""
-
-
-def clear_state():
-    st.session_state.dow = ""
-    st.session_state.cheeze = ""
-    st.session_state.toping = ""
-
+    if "count" not in st.session_state:
+            st.session_state.count = 0
 
 init_state()
+
+def add() :
+    st.session_state.count += 1
+    return st.session_state.count
+    
+
+def dec() :
+    if st.session_state.count == 0 :
+         return st.session_state.count
+    st.session_state.count -= 1
+    return st.session_state.count
+
+def clear_state():
+    st.session_state.pizza = ""
+    st.session_state.dow = "초기화"
+    st.session_state.cheeze = "초기화"
+    st.session_state.toping = "초기화"
+    st.session_state.count = 0
+
+
+
 
 
 def make_p1():
@@ -45,13 +62,19 @@ def make_p3():
     st.session_state.cheeze = "p3_cheeze"
     st.session_state.toping = "p3_toping"
 
-
 # ------------------------------------------------------------
 
 st.title("Pizza")
 
 if st.session_state.pizza != "":
     st.info(f"당신이 선택한 피자는: {st.session_state.pizza}")
+    st.info(f"개수 : {st.session_state.count}")
+    
+    add_col, dec_col = st.columns(2)
+    with add_col:
+        st.button("추가", on_click = add, use_container_width= True)
+    with dec_col :
+        st.button("감소", on_click = dec, use_container_width= True)
 
 p1, p2, p3 = st.columns(3)
 with p1:
@@ -68,9 +91,12 @@ with st.form("pizza_form"):
     input_toping = st.text_input("토핑 선택", key="toping")
     submit = st.form_submit_button("제출")
     reset = st.form_submit_button("초기화", on_click=clear_state)
+    
 
 # --------------------------------------------------------------
 
 if submit:
     st.subheader(f"당신이 선택한 피자는 {st.session_state.pizza}")
-    st.info(f"{input_dow} {input_cheeze} {input_toping}")
+    st.info(f"재료 : {input_dow} {input_cheeze} {input_toping}")
+    st.info(f"피자 개수 : {st.session_state.count}")
+    clear_state
