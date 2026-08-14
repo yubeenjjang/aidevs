@@ -43,7 +43,10 @@ def call_gemini_chat_api(message):
     # Streamlit은 Gemini SDK를 직접 import하지 않습니다.
     # 화면은 질문만 백엔드로 보내고, 실제 Gemini API key와 호출 처리는 백엔드가 담당합니다.
     payload = {"question": message}
-    response = httpx.post(f"{API_BASE_URL}{CHAT_ENDPOINT}", json=payload, timeout=30.0)
+    response = httpx.post(f"{API_BASE_URL}{CHAT_ENDPOINT}",
+    json=payload, 
+    timeout=30.0
+    )
     response.raise_for_status()
     return response.json()
 

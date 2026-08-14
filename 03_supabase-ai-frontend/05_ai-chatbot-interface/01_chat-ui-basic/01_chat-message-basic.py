@@ -9,3 +9,6 @@ with st.chat_message("assistant"):  # 파일, 화면 영역, 로딩 상태처럼
     st.write("좋습니다. 먼저 메시지 출력 구조부터 살펴보겠습니다.")  # 문자열, 숫자, 객체를 Streamlit 화면에 출력합니다.
 
 
+# st.chat_message("human")
+# st.chat_message("ai")
+# st.chat_message("system") S 아이콘

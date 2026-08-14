@@ -2,7 +2,7 @@
 import streamlit as st
 
 
-#세션 스테이드 사용 시 초기화 작성하기
+#세션 스테이트 사용 시 초기화 작성하기
 def init_state():
     if "pizza" not in st.session_state:
         st.session_state.pizza = ""
@@ -34,8 +34,6 @@ def clear_state():
     st.session_state.cheeze = "초기화"
     st.session_state.toping = "초기화"
     st.session_state.count = 0
-
-
 
 
 
