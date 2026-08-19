@@ -9,7 +9,7 @@ class Decision:
     reason: str
     confidence: float
 
-
+#라우터 역할(분류)
 def fixed_workflow(message: str) -> Decision:
     """정해진 키워드와 순서만 사용하는 Workflow."""
     if "날씨" in message:

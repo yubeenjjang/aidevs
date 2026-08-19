@@ -16,6 +16,11 @@
       "path": "02_supabase-ai-backend",
       "envManager": "ms-python.python:venv",
       "packageManager": "ms-python.python:pip"
+    },
+    {
+      "path": "05_llm-agent-orchestration",
+      "envManager": "ms-python.python:venv",
+      "packageManager": "ms-python.python:pip"
     }
   ]
 }

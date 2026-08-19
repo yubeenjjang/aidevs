@@ -28,6 +28,7 @@ def classify_travel_request(message: str) -> TravelIntent:
 
 def decide_next_action(result: TravelIntent) -> dict[str, str]:
     """낮은 confidence와 누락 정보를 안전한 추가 질문으로 연결합니다."""
+    #유사도
     if result.confidence < 0.6:
         return {
             "action": "ask_user",
