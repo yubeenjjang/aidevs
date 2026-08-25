@@ -79,7 +79,7 @@ def search(question: str, top_k: int = 3) -> list[dict]:
     with connect() as connection, connection.cursor() as cursor:
         cursor.execute(
             """
-            SELECT title, content, source, 1 - (embedding <=> %s) AS score
+            SELECT title, content, source, 1 - (embedding <=> %s :: vector) AS score
             FROM documents
             WHERE collection_name = %s
               AND embedding_provider = 'ollama'
