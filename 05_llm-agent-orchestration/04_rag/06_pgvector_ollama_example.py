@@ -85,7 +85,7 @@ def search(question: str, top_k: int = 3) -> list[dict]:
               AND embedding_provider = 'ollama'
               AND embedding_model = %s
               AND embedding_dimension = %s
-            ORDER BY embedding <=> %s
+            ORDER BY embedding <=> %s :: vector
             LIMIT %s
             """,
             (vector, COLLECTION, OLLAMA_EMBEDDING_MODEL, len(vector), vector, top_k),
