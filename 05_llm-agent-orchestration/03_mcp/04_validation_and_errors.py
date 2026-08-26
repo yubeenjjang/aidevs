@@ -6,6 +6,7 @@ from _stdio_client import connect_to_travel_server
 
 
 async def main() -> None:
+    #mcp 서버와 연결함
     async with connect_to_travel_server() as session:
         result = await session.call_tool(
             "search_hotels",

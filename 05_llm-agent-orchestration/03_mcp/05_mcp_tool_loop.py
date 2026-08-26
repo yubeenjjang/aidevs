@@ -63,7 +63,7 @@ INSTRUCTIONS = (
     "모두 호출하세요. Tool 결과만 근거로 한국어 최종 답변을 작성하세요."
 )
 
-
+#tool 리스트 만들기
 def to_openai_tool(tool) -> dict[str, Any]:
     """MCP Tool Schema를 OpenAI Responses API의 Function Tool로 변환합니다."""
     raw = tool.model_dump(by_alias=True)
@@ -81,7 +81,7 @@ def text_result(result) -> str:
         content.text for content in result.content if hasattr(content, "text")
     )
 
-
+#사용자 질문 받으면 agent 실행(mini_agent의 runtime과 동일)
 async def answer(question: str) -> dict[str, Any]:
     if not os.getenv("OPENAI_API_KEY"):
         raise RuntimeError("OPENAI_API_KEY가 필요합니다.")
@@ -97,6 +97,7 @@ async def answer(question: str) -> dict[str, Any]:
             instructions=INSTRUCTIONS,
             input=question,
             tools=openai_tools,
+            #여러개의 tool의 결과를 한꺼번에 보여줌
             parallel_tool_calls=True,
         )
 
@@ -150,7 +151,10 @@ async def answer(question: str) -> dict[str, Any]:
 
 
 async def main() -> None:
-    result = await answer("부산 날씨와 15만원 이하 호텔을 찾아 주세요.")
+    # result = await answer("부산 날씨 알려주세요")
+    # result = await answer("부산 날씨와 15만원 이하 호텔을 찾아 주세요.")
+    
+    result = await answer("부산에서 15만원 이하 호텔을 찾아주세요")
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 

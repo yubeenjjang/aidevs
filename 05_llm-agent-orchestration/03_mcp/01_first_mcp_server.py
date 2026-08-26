@@ -10,7 +10,23 @@ mcp = FastMCP(
     instructions="현재 날씨와 호텔 정보를 제공하는 교육용 MCP Server입니다.",
 )
 
+#register.py와 달리 그냥 아래와 같이 등록 가능
+@mcp.tool()
+def get_current_weather(city: Literal["부산", "서울"], view:str) -> dict:
+    #이 tool의 설명서
+    """도시와 뷰를 이용해서 호텔을 검색합니다."""
+    normalized = city.strip()
+    #RAG
+    return [
+        {"name" : "바다 호텔", "city" :"부산", "view" : view, "price" : "120,000"},
+        {"name" : "바다 호텔", "city" :"부산", "view" : view, "price" : "120,000"}
+        
+    ]
+        
+    
 
+
+#register.py와 달리 그냥 아래와 같이 등록 가능
 @mcp.tool()
 def get_current_weather(city: Literal["부산", "서울"]) -> dict:
     """도시의 현재 날씨를 조회합니다."""
@@ -45,7 +61,7 @@ def search_hotels(
     ]
     return {"items": matches, "source": "travel-hotel-catalog"}
 
-
+#문서에 있는 텍스트 가져오기
 @mcp.resource("travel://policy/baggage")
 def baggage_policy() -> str:
     """교육용 국내선 수하물 정책을 제공합니다."""
@@ -53,4 +69,5 @@ def baggage_policy() -> str:
 
 
 if __name__ == "__main__":
+    print("MCP server is running on stdio....")
     mcp.run(transport="stdio")
