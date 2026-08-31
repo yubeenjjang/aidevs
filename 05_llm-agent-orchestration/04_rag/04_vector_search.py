@@ -19,6 +19,7 @@ def cosine_similarity(left: list[float], right: list[float]) -> float:
 
 
 if __name__ == "__main__":
+    #임베딩
     query_vector = [0.9, 0.1, 0.0]  # "숙소 예약을 취소하고 돈을 돌려받고 싶어요"
     scores = [
         (source, cosine_similarity(query_vector, vector))

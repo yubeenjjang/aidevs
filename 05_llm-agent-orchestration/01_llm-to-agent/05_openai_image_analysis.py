@@ -26,7 +26,8 @@ image_path = Path(sys.argv[1])
 content_type = mimetypes.guess_type(image_path.name)[0] or "image/jpeg"
 encoded = base64.b64encode(image_path.read_bytes()).decode("ascii")
 
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+# 이미지 업로드·분석 중의 일시적 지연에 대비합니다.
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"], timeout=120.0, max_retries=3)
 response = client.responses.parse(
     model=os.getenv("OPENAI_VISION_MODEL", "gpt-4.1-mini"),
     instructions=(

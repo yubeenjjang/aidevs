@@ -18,7 +18,8 @@ def main() -> None:
         raise RuntimeError("실제 호출은 APP_MODE=real일 때만 허용합니다.")
     if not os.getenv("OPENAI_API_KEY"):
         raise RuntimeError("OPENAI_API_KEY가 필요합니다.")
-    client = OpenAI()
+    # 일시적인 네트워크 지연은 SDK가 재시도하고, 긴 응답도 충분히 기다립니다.
+    client = OpenAI(timeout=120.0, max_retries=3)
     response = client.responses.create(
         model=os.getenv("OPENAI_MODEL", "gpt-4.1-mini"),
         input=(

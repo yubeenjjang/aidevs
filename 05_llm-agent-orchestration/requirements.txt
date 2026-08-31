@@ -8,6 +8,7 @@ ollama
 pgvector
 psycopg[binary]
 pydantic
+pypdf
 python-multipart
 python-dotenv
 redis

@@ -8,7 +8,8 @@ from openai import OpenAI
 
 
 load_dotenv()
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+# 음성 생성은 응답 크기와 생성 시간이 있어 기본값보다 여유 있게 설정합니다.
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"], timeout=120.0, max_retries=3)
 output_path = Path(__file__).with_name("travel-guide.mp3")
 
 with client.audio.speech.with_streaming_response.create(

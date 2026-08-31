@@ -25,9 +25,11 @@ def ask(question: str, cache: JsonCache) -> dict:
 
 
 if __name__ == "__main__":
+    #redis에 접속하는 코드
     redis_cache = JsonCache()
     redis_cache.delete_namespace(CACHE_NAMESPACE)
 
+    
     first = ask(QUESTION, redis_cache)
     print("1차 질문: Redis MISS → RAG 실행")
     print(first)

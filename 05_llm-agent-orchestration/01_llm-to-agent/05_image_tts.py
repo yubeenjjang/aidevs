@@ -21,7 +21,8 @@ class TravelImageAnalysis(BaseModel):
 
 load_dotenv()
 
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+# 이미지 분석과 음성 생성을 연속 호출하므로 일시적인 응답 지연에 대비합니다.
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"], timeout=180.0, max_retries=3)
 
 
 # 이미지 파일 경로

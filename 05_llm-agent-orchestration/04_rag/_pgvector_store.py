@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 load_dotenv(ROOT / ".env")
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://127.0.0.1:11434").rstrip("/")
 EMBEDDING_MODEL = os.getenv("OLLAMA_EMBEDDING_MODEL", "embeddinggemma")
+OLLAMA_EMBED_TIMEOUT_SECONDS = float(os.getenv("OLLAMA_EMBED_TIMEOUT_SECONDS", "300"))
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
     "postgresql://agent_user:agent_password@127.0.0.1:5433/agent_db",
@@ -25,8 +26,13 @@ DATABASE_URL = os.getenv(
 def embed(text: str) -> list[float]:
     response = httpx.post(
         f"{OLLAMA_BASE_URL}/api/embed",
-        json={"model": EMBEDDING_MODEL, "input": text},
-        timeout=60,
+        # CPU 환경의 첫 모델 로딩은 기본 60초를 넘길 수 있습니다.
+        json={
+            "model": EMBEDDING_MODEL,
+            "input": text,
+            "keep_alive": "10m",
+        },
+        timeout=OLLAMA_EMBED_TIMEOUT_SECONDS,
     )
     response.raise_for_status()
     return response.json()["embeddings"][0]
