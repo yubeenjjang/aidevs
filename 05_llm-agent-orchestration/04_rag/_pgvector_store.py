@@ -24,16 +24,26 @@ DATABASE_URL = os.getenv(
 
 
 def embed(text: str) -> list[float]:
+    payload = {
+        "model": EMBEDDING_MODEL,
+        "input": text,
+        "keep_alive": "10m",
+    }
     response = httpx.post(
         f"{OLLAMA_BASE_URL}/api/embed",
         # CPU 환경의 첫 모델 로딩은 기본 60초를 넘길 수 있습니다.
-        json={
-            "model": EMBEDDING_MODEL,
-            "input": text,
-            "keep_alive": "10m",
-        },
+        json=payload,
         timeout=OLLAMA_EMBED_TIMEOUT_SECONDS,
     )
+    if response.status_code == 404:
+        # 이전 Ollama는 /api/embed 대신 /api/embeddings와 prompt 필드를 사용합니다.
+        response = httpx.post(
+            f"{OLLAMA_BASE_URL}/api/embeddings",
+            json={"model": EMBEDDING_MODEL, "prompt": text},
+            timeout=OLLAMA_EMBED_TIMEOUT_SECONDS,
+        )
+        response.raise_for_status()
+        return response.json()["embedding"]
     response.raise_for_status()
     return response.json()["embeddings"][0]
 
