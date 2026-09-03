@@ -29,11 +29,13 @@ from openai import OpenAI
 
 from travel_tools import TOOL_DEFINITIONS, TOOLS, execute_tool
 
-
 ROOT = Path(__file__).resolve().parents[1]
 load_dotenv(ROOT / ".env")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4.1-mini")
-INSTRUCTIONS = """당신은 한국 여행 AI Agent입니다.
+INSTRUCTIONS = """
+사용자가 날씨만 검색한다고 하면 날씨만 검색하고 끝난다.
+
+당신은 한국 여행 AI Agent입니다.
 사용자 목표를 달성하기 위해 제공된 Function Tool만 사용하세요.
 날씨에 맞는 장소 추천 요청에서는 먼저 get_weather를 호출하세요.
 날씨 Tool Result가 비이면 search_indoor_places를, 그렇지 않으면
@@ -41,8 +43,22 @@ search_outdoor_places를 호출하세요. Tool Result에 없는 사실을 만들
 필요한 근거를 모두 얻었으면 추가 Tool 없이 간결한 한국어 최종 답변을 작성하세요.
 최종 답변에는 Tool Result에 있는 날씨 값과 장소 이름만 사용하세요. 장소에 대한
 특징·시설·활동 설명처럼 Tool Result에 없는 사실은 추측하거나 추가하지 마세요.
-"""
 
+
+"""
+# INSTRUCTIONS = """당신은 한국 여행 AI Agent입니다.
+# 사용자의 요청을 정확히 따르고 제공된 Function Tool만 사용하세요.
+
+# 사용자가 날씨만 요청하면 get_weather만 호출하고 장소 검색 Tool은 호출하지 마세요.
+
+# 사용자가 장소 추천까지 명시적으로 요청한 경우에만:
+# 먼저 get_weather를 호출하세요.
+# 비이면 search_indoor_places를 호출하세요.
+# 비가 아니면 search_outdoor_places를 호출하세요.
+
+# Tool Result에 없는 사실은 만들지 마세요.
+# 필요한 정보를 얻었으면 추가 Tool 없이 간결한 한국어 답변을 작성하세요.
+# """
 OPENAI_TOOLS: list[dict[str, Any]] = [
     {
         "type": "function",
@@ -147,12 +163,15 @@ def create_initial_response(client: OpenAI, question: str) -> Any:
         model=OPENAI_MODEL,
         instructions=INSTRUCTIONS,
         input=question,
-        tools=OPENAI_TOOLS,
+        tools=OPENAI_TOOLS,  # tool list
         tool_choice="auto",
         parallel_tool_calls=False,
     )
 
-def continue_after_tools(client: OpenAI, previous_response_id: str, tool_outputs: list[dict[str, Any]]) -> Any:
+
+def continue_after_tools(
+    client: OpenAI, previous_response_id: str, tool_outputs: list[dict[str, Any]]
+) -> Any:
     """Tool Result를 OpenAI에 전달하여 Agent의 재판단을 요청합니다.
 
     한 라운드의 Tool 실행 직후 호출합니다. 직전 response id와 Tool Result를 제공하여
