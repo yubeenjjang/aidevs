@@ -18,7 +18,7 @@ SCENARIO = {
         "tools": ["get_weather", "search_indoor_places"],
     },
 }
-
+    
 
 def post_json(url: str, body: dict) -> dict:
     data = json.dumps(body).encode("utf-8")
