@@ -3,7 +3,7 @@ from typing import Literal
 from pydantic import BaseModel, Field, model_validator
 
 
-AgentId = Literal["weather_agent", "place_agent", "budget_agent", "itinerary_agent"]
+AgentId = Literal["weather_agent", "place_agent", "budget_agent", "itinerary_agent", "safety_agent"]
 
 
 class TravelPlanDraft(BaseModel):
@@ -26,6 +26,61 @@ class LearningAgentResult(BaseModel):
 class LearningRouteDecision(BaseModel):
     selected_agent: Literal["refund_agent", "delivery_agent", "technical_support_agent"]
     reason: str
+
+
+class SupportRouteDecision(BaseModel):
+    """고객지원 Router가 한 Worker 또는 추가 정보 요청을 선택하는 계약입니다."""
+
+    agent_id: Literal["router_agent"] = "router_agent"
+    selected_agent: Literal[
+        "delivery_agent",
+        "refund_agent",
+        "technical_support_agent",
+        "request_information",
+    ]
+    reason: str
+    missing_information: list[str] = Field(default_factory=list, max_length=5)
+
+    @model_validator(mode="after")
+    def missing_information_must_match_route(self) -> "SupportRouteDecision":
+        if self.selected_agent == "request_information" and not self.missing_information:
+            raise ValueError("추가 정보 요청에는 missing_information이 필요합니다.")
+        if self.selected_agent != "request_information" and self.missing_information:
+            raise ValueError("Worker를 선택한 경우 missing_information은 비어 있어야 합니다.")
+        return self
+
+
+class SupervisorDecision(BaseModel):
+    """Supervisor가 현재 State를 보고 반환하는 다음 행동 계약입니다."""
+
+    agent_id: Literal["supervisor_agent"] = "supervisor_agent"
+    next_agent: Literal["analyst_agent", "developer_agent", "reviewer_agent", "finish"]
+    instruction: str
+    context_keys: list[str] = Field(default_factory=list, max_length=5)
+    reason: str
+
+
+class HandoffDecision(BaseModel):
+    agent_id: Literal["support_agent"] = "support_agent"
+    handoff_required: bool
+    target_agent: Literal["refund_agent"] | None = None
+    reason: str
+    handoff_context: dict[str, object] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def handoff_fields_must_match_decision(self) -> "HandoffDecision":
+        if self.handoff_required and self.target_agent is None:
+            raise ValueError("Handoff가 필요하면 target_agent가 있어야 합니다.")
+        if not self.handoff_required and (self.target_agent is not None or self.handoff_context):
+            raise ValueError("Handoff가 필요하지 않으면 대상과 Context가 비어 있어야 합니다.")
+        return self
+
+
+class EvaluationResult(BaseModel):
+    agent_id: Literal["evaluator_agent"] = "evaluator_agent"
+    passed: bool
+    feedback: str
+    missing_requirements: list[str] = Field(default_factory=list, max_length=5)
 
 
 class SpecialistResult(BaseModel):
@@ -52,6 +107,14 @@ class PlaceResult(BaseModel):
     agent_id: Literal["place_agent"] = "place_agent"
     places: list[str] = Field(min_length=1, max_length=6)
     selection_reason: str
+
+
+class SafetyResult(BaseModel):
+    """Safety Agent의 위험 요소와 확인 행동 계약입니다."""
+
+    agent_id: Literal["safety_agent"] = "safety_agent"
+    risks: list[str] = Field(min_length=1, max_length=6)
+    required_actions: list[str] = Field(min_length=1, max_length=6)
 
 
 class BudgetResult(BaseModel):
@@ -107,4 +170,5 @@ SPECIALIST_GOALS: dict[AgentId, str] = {
     "place_agent": "사용자 조건에 맞는 장소 탐색 기준과 후보를 정리한다.",
     "budget_agent": "여행 예산 항목과 계산에 필요한 정보를 정리한다.",
     "itinerary_agent": "검증된 정보를 날짜별 일정 초안으로 구성한다.",
+    "safety_agent": "알레르기와 이동 조건에서 주의할 사항을 독립적으로 정리한다.",
 }

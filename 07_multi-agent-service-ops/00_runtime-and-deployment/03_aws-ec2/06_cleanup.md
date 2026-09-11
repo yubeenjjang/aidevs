@@ -2,12 +2,19 @@
 
 리소스 정리는 AWS 실습의 필수 완료 항목입니다.
 
+> 이 문서는 모든 AWS 실습을 끝냈을 때 사용하는 최종 정리 절차입니다.
+> `05_weather-mcp-deployment-project`를 마치고 바로
+> `06_weather-mcp-stateful-deployment`를 진행한다면 EC2를 Terminate하지 않습니다.
+> 05 Application Container만 중지하고, EC2·Security Group·Key Pair·Docker를 06에서
+> 재사용합니다. 06까지 마치고 보존할 데이터를 확인한 뒤 이 문서의 Terminate 절차를
+> 수행합니다.
+
 ## 1. EC2 내부 Container 정리
 
 ```bash
 cd ~/simple-compose
-docker compose down
-docker compose ps
+docker compose -f compose.full-stack.yml down
+docker compose -f compose.full-stack.yml ps
 ```
 
 `postgres_data` Volume에는 실습 메모와 Chat 이력이 남아 있습니다. EC2 Terminate 전에
@@ -28,7 +35,7 @@ docker images
 
 - Frontend 정상 화면
 - Backend Health 결과
-- `docker compose ps`
+- `docker compose -f compose.full-stack.yml ps`
 - 장애 전후 로그 일부
 - 배운 점
 
