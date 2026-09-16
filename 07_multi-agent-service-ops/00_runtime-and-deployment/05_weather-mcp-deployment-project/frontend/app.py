@@ -8,6 +8,8 @@ import os
 import requests
 import streamlit as st
 
+
+
 BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8000")
 st.set_page_config(page_title="Weather MCP Agent", page_icon="🌦️", layout="wide")
 st.sidebar.title("학습 메뉴")
