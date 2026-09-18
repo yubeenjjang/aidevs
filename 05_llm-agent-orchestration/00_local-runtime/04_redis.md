@@ -9,7 +9,7 @@ docker run -d `
   redis:7 `
   redis-server --appendonly yes
 ```
-
+docker run -d --name aidevs-redis -p 6379:6379 redis:7 redis-server --appendonly yes
 다음 수업부터는 새로 만들지 않고 기존 Container를 시작합니다.
 
 ```powershell
