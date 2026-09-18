@@ -1,0 +1,10 @@
+name: 22-frontend
+
+services:
+  frontend:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "8501:8501"
+    restart: unless-stopped
