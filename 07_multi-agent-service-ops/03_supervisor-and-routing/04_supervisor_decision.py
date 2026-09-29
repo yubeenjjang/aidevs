@@ -32,7 +32,7 @@ SupervisorDecision 계약으로 반환하고 agent_id는 supervisor_agent로 작
 if __name__ == "__main__":
     current_state = {
         "completed_agents": ["analyst_agent"],
-        "outputs": {"analyst_agent": "입력 길이와 허용 문자를 검증해야 합니다."},
+        "outputs": {"developer_agent": "입력 길이와 허용 문자를 검증해야 합니다."},
         "current_step": 1,
         "max_steps": 4,
     }
