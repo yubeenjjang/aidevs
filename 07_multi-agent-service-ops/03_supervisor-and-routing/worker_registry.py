@@ -11,7 +11,7 @@ import yaml
 
 DEFINITION_FILE = Path(__file__).resolve().parent / "worker_definitions.yaml"
 
-
+#yaml 파일을 가져오는 역할
 def load_worker_registry() -> dict[str, dict[str, str]]:
     document = yaml.safe_load(DEFINITION_FILE.read_text(encoding="utf-8"))
     workers = document.get("workers", {})

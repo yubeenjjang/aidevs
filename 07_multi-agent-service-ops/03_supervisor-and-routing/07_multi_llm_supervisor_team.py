@@ -18,7 +18,7 @@ from shared.travel_contracts import LearningAgentResult, SupervisorDecision
 from shared.travel_llm import run_with_metadata
 from worker_registry import load_worker_registry
 
-
+#사용할 에이전트 세가지, worker_definitions.yaml 에 정의됨
 WORKER_PLAN = ["analyst_agent", "developer_agent", "reviewer_agent"]
 WORKERS = load_worker_registry()
 
