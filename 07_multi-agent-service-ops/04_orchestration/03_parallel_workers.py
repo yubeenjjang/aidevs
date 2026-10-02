@@ -21,6 +21,7 @@ from shared.travel_llm import provider_for_agent, run_with_metadata
 
 REQUEST = "부산 2박 3일, 대중교통, 총예산 60만 원"
 JOBS = {
+    #출력 계약
     "weather_agent": (WeatherResult, "여행 기간의 날씨 위험과 준비 사항을 정리하세요."),
     "place_agent": (PlaceResult, "대중교통으로 방문할 장소 후보와 선택 근거를 작성하세요."),
     "budget_agent": (BudgetResult, "60만 원을 항목별로 나누고 합계를 정확히 맞추세요."),
@@ -40,6 +41,7 @@ def parallel_orchestrator_agent() -> dict[str, object]:
     results: dict[str, object] = {}
     errors: dict[str, str] = {}
     completion_order: list[str] = []
+    #병렬 실행
     with ThreadPoolExecutor(max_workers=3) as executor:
         futures = {executor.submit(parallel_worker_agent, agent_id): agent_id for agent_id in JOBS}
         for future in as_completed(futures):

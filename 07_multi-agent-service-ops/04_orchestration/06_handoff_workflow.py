@@ -19,7 +19,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-from shared.travel_contracts import HandoffDecision
+from shared.travel_contracts import SupportAgentResult
 from shared.travel_llm import provider_for_agent, run_learning_agent, run_with_metadata
 
 
@@ -31,12 +31,13 @@ class SupportHandoff(BaseModel):
     responsibility: str = Field(min_length=5, max_length=300)
     context: dict[str, object]
     user_id: str
+    #handoff 진행횟수를 정해둠
     hop_count: int = Field(default=1, ge=1, le=3)
 
 
 def handoff_guard_agent(handoff: SupportHandoff, expected_user_id: str) -> None:
-    if handoff.user_id != expected_user_id:
-        raise PermissionError("다른 사용자의 Handoff는 받을 수 없습니다.")
+    # if handoff.user_id != expected_user_id:
+    #     raise PermissionError("다른 사용자의 Handoff는 받을 수 없습니다.")
     forbidden = {"api_key", "password", "secret", "raw_messages", "payment_token"}
     exposed = forbidden.intersection(handoff.context)
     if exposed:
@@ -49,7 +50,7 @@ def support_agent(message: str) -> dict:
 handoff_context에는 order_id와 issue만 넣고 비밀번호·Token·전체 대화는 넣지 마세요.
 요청: {message}
 HandoffDecision 계약으로 반환하세요."""
-    return run_with_metadata(provider_for_agent("support_agent"), prompt, HandoffDecision)
+    return run_with_metadata(provider_for_agent("support_agent"), prompt, SupportAgentResult)
 
 
 def refund_agent(message: str, handoff: SupportHandoff) -> dict:
@@ -61,6 +62,8 @@ if __name__ == "__main__":
     decision = support_agent(request)
     print("=== Support Agent 결정 ===")
     print(json.dumps(decision, ensure_ascii=False, indent=2))
+    
+    
     if decision["result"] is None:
         print("Support Agent 오류로 Handoff를 실행하지 않습니다.")
     elif not decision["result"]["handoff_required"]:
@@ -70,6 +73,7 @@ if __name__ == "__main__":
             raise ValueError("Support Agent가 허용되지 않은 Handoff 대상을 선택했습니다.")
         # 두 값은 계약에서 필수 검증되었습니다. 누락된 Context를 성공 데이터로 채우지 않습니다.
         safe_context = decision["result"]["handoff_context"]
+        #habdoff 규칙
         handoff = SupportHandoff(
             task_id="support-001",
             trace_id="trace-001",

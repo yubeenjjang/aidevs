@@ -69,8 +69,8 @@ class HandoffContext(BaseModel):
     order_id: str | None = None
     issue: str | None = None
 
-
-class HandoffDecision(BaseModel):
+#에이전트 출력 계약
+class SupportAgentResult(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     agent_id: Literal["support_agent"] = "support_agent"
@@ -80,7 +80,7 @@ class HandoffDecision(BaseModel):
     handoff_context: HandoffContext = Field(default_factory=HandoffContext)
 
     @model_validator(mode="after")
-    def handoff_fields_must_match_decision(self) -> "HandoffDecision":
+    def handoff_fields_must_match_decision(self) -> "SupportAgentResult":
         context = self.handoff_context
         if self.handoff_required:
             if self.target_agent is None:
