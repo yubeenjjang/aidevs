@@ -23,6 +23,7 @@ from shared.travel_contracts import EvaluationResult
 from shared.travel_llm import provider_for_agent, run_learning_agent, run_with_metadata
 
 
+#평가 기준
 REQUIRED_TEXT = "승인 전에는 결제를 실행하지 않습니다."
 MAX_REVIEW_ROUNDS = 5
 
@@ -57,6 +58,7 @@ def reviser_agent(draft: str, feedback: str) -> dict[str, object]:
 
 
 def feedback_loop_orchestrator_agent(request: str) -> dict[str, object]:
+    print("orchestrator : start..............................")
     trace: list[dict[str, object]] = []
     writer_result = writer_agent(request)
     trace.append({"step": "writer", "provider": writer_result["provider_requested"], "error": writer_result["error"]})
@@ -70,6 +72,8 @@ def feedback_loop_orchestrator_agent(request: str) -> dict[str, object]:
         if evaluation["error"]:
             return {"status": "failed", "reason": "evaluator_failed", "draft": draft, "trace": trace}
         if evaluation["result"]["passed"] and REQUIRED_TEXT in draft:
+            print("orchestrator : pass.........................................")
+
             return {"status": "completed", "draft": draft, "trace": trace}
         if round_number == MAX_REVIEW_ROUNDS:
             break
@@ -79,6 +83,7 @@ def feedback_loop_orchestrator_agent(request: str) -> dict[str, object]:
         if revision["error"]:
             return {"status": "failed", "reason": "reviser_failed", "draft": draft, "trace": trace}
         draft = revision["result"]["summary"]
+        print("orchestrator:end//.........................................")
 
     return {"status": "failed", "reason": "max_review_rounds", "draft": draft, "trace": trace}
 
